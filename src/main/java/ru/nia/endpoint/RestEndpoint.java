@@ -24,11 +24,11 @@ public class RestEndpoint {
         Apfloat first = service.getCos(step_size);
         Apfloat second = service.getCos(step_size * 2);
 
-        strings.add(first.toString());
-        strings.add(second.toString());
+        strings.add(first.toString(true));
+        strings.add(second.toString(true));
         for (int i = 0; i < step_count - 2; i++) {
             Apfloat third = service.doRecurFunction(second, first, step_size);
-            strings.add(third.toString());
+            strings.add(third.toString(true));
             first = second;
             second = third;
         }
