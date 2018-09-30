@@ -7,11 +7,11 @@ public class MultiplierService {
     private static final int precision = 80;
 
     public Apfloat getCos(int val) {
-        return ApfloatMath.cos(ApfloatMath.toRadians(new Apfloat(val, precision)));
+        return ApfloatMath.cos(ApfloatMath.toRadians(new Apfloat(val, precision))).precision(precision);
     }
 
     public Apfloat getSin(int val) {
-        return ApfloatMath.sin(ApfloatMath.toRadians(new Apfloat(val, precision)));
+        return ApfloatMath.sin(ApfloatMath.toRadians(new Apfloat(val, precision))).precision(precision);
     }
 
     private Apfloat getK(int step) {
@@ -21,8 +21,9 @@ public class MultiplierService {
 
     public Apfloat doRecur(Apfloat second, Apfloat first, int step) {
         Apfloat res = getK(step);
-        res = res.multiply(second);
-        res = res.subtract(first);
+
+        res = res.multiply(second).precision(precision);
+        res = res.subtract(first).precision(precision);
         return res;
     }
 }
