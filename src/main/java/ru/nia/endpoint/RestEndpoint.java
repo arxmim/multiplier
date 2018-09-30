@@ -18,8 +18,8 @@ public class RestEndpoint {
         this.service = service;
     }
 
-    @RequestMapping("/doRecur")
-    public List<String> doRecur(@RequestParam(value = "step") int step_size, int step_count) {
+    @RequestMapping("/doRecurCos")
+    public List<String> doRecurCos(@RequestParam(value = "step") int step_size, int step_count) {
         ArrayList<String> strings = new ArrayList<>();
         Apfloat first = service.getCos(step_size);
         Apfloat second = service.getCos(step_size * 2);
@@ -27,12 +27,28 @@ public class RestEndpoint {
         strings.add(first.toString(true));
         strings.add(second.toString(true));
         for (int i = 0; i < step_count - 2; i++) {
-            Apfloat third = service.doRecurFunction(second, first, step_size);
+            Apfloat third = service.doRecur(second, first, step_size);
             strings.add(third.toString(true));
             first = second;
             second = third;
         }
         return strings;
+    }
 
+    @RequestMapping("/doRecurSin")
+    public List<String> doRecurSin(@RequestParam(value = "step") int step_size, int step_count) {
+        ArrayList<String> strings = new ArrayList<>();
+        Apfloat first = service.getSin(step_size);
+        Apfloat second = service.getSin(step_size * 2);
+
+        strings.add(first.toString(true));
+        strings.add(second.toString(true));
+        for (int i = 0; i < step_count - 2; i++) {
+            Apfloat third = service.doRecur(second, first, step_size);
+            strings.add(third.toString(true));
+            first = second;
+            second = third;
+        }
+        return strings;
     }
 }
