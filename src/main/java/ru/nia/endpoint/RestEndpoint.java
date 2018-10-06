@@ -1,12 +1,18 @@
 package ru.nia.endpoint;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apfloat.Apfloat;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.nia.service.MultiplierService;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,5 +61,35 @@ public class RestEndpoint {
             second = third;
         }
         return strings;
+    }
+
+    @RequestMapping("/toExcel")
+    public byte[] toExcel(@RequestParam(value = "step") BigDecimal step_size, int step_count, boolean isCos) throws IOException {
+        log.info("isCos= " + isCos);
+        List<String> result;
+        if (isCos) {
+            result = doRecurCos(step_size, step_count);
+        } else {
+            result = doRecurSin(step_size, step_count);
+        }
+        XSSFWorkbook book = new XSSFWorkbook();
+        Sheet sheet = book.createSheet("result");
+
+        int i = 0;
+        for (String res : result) {
+            Row row = sheet.createRow(i);
+            Cell cell = row.createCell(0);
+            cell.setCellValue(i);
+            cell = row.createCell(1);
+            cell.setCellValue(res);
+            i++;
+        }
+
+        // Меняем размер столбца
+//        sheet.autoSizeColumn(0);
+//        sheet.autoSizeColumn(1);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        book.write(stream);
+        return stream.toByteArray();
     }
 }

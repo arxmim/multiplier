@@ -19,8 +19,11 @@
     <a id="sin" href="#">Sin</a>
 </p>
 <p><b>Результат (</b>
+    <label id="type"></label>
     <label id="label"></label>
     <b>):</b>
+    <br/>
+    <button id="excel" disabled="disabled">Скачать в Excel</button>
     <br/>
 <div id="container"></div>
 </p>
@@ -38,16 +41,20 @@
             success: function (response) {
 
             var event_data = '';
+                $('#excel').attr("disabled", false);
                 $.each(response, function(index, value){
                     event_data += '<tr>';
                     event_data += '<td>'+value+'</td>';
                     event_data += '<tr>';
                 });
-            $("#label").html("косинус с шагом=" + $('#step').val() + " и числом шагов=" + $('#step_count').val());
-            $("#container").html(event_data);
+                $("#type").html("косинус");
+                $("#label").html(" с шагом=" + $('#step').val() + " и числом шагов=" + $('#step_count').val());
+                $("#container").html(event_data);
             },
             error: function(d){
-            $("#label").html("косинус с шагом=" + $('#step').val() + " и числом шагов=" + $('#step_count').val());
+                $('#excel').attr("disabled", true);
+                $("#type").html("косинус");
+                $("#label").html(" с шагом=" + $('#step').val() + " и числом шагов=" + $('#step_count').val());
                 $("#container").html("Что-то сломалось");
             }
         });
@@ -63,22 +70,49 @@
                 'step_count': $('#step_count').val()
             },
             success: function (response) {
+                $('#excel').attr("disabled", false);
                 var event_data = '';
                     $.each(response, function(index, value){
                         event_data += '<tr>';
                         event_data += '<td>'+value+'</td>';
                         event_data += '<tr>';
                     });
-            $("#label").html("синус с шагом=" + $('#step').val() + " и числом шагов=" + $('#step_count').val());
+                $("#type").html("синус");
+                $("#label").html(" с шагом=" + $('#step').val() + " и числом шагов=" + $('#step_count').val());
                 $("#container").html(event_data);
             },
             error: function(d){
-            $("#label").html("синус с шагом=" + $('#step').val() + " и числом шагов=" + $('#step_count').val());
+                $('#excel').attr("disabled", true);
+                $("#type").html("синус");
+                $("#label").html(" с шагом=" + $('#step').val() + " и числом шагов=" + $('#step_count').val());
                 $("#container").html("Что-то сломалось");
             }
         });
     });
 
-
+    $('#excel').click(function () {
+        var isCos = $('#type').text() === 'косинус';
+        $.ajax({
+            type: "GET",
+            cache: false,
+            url: '/toExcel',
+            data: {
+                'step': $('#step').val(),
+                'step_count': $('#step_count').val(),
+                'isCos': isCos
+            },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (data) {
+                var a = document.createElement('a');
+                var url = window.URL.createObjectURL(data);
+                a.href = url;
+                a.download = 'расчеты ' + $('#type').text() + " шаг " + $('#step').val() + " число шагов " + $('#step_count').val() + ".xlsx";
+                a.click();
+                window.URL.revokeObjectURL(url);
+            }
+        });
+    });
 </script>
 </html>
