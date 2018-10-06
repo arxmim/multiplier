@@ -79,8 +79,6 @@ public class RestEndpoint {
         for (String res : result) {
             Row row = sheet.createRow(i);
             Cell cell = row.createCell(0);
-            cell.setCellValue(i);
-            cell = row.createCell(1);
             cell.setCellValue(res);
             i++;
         }
