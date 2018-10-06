@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Рекуррентный расчет</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script src="js/jquery-3.3.1.js"></script>
+</head>
+<body>
+<p><b>Шаг:</b><br>
+    <input id="step" type="text" size="40">
+</p>
+<p><b>Число шагов:</b><br>
+    <input id="step_count" type="text" size="40">
+</p>
+<p><b>Расчет косинуса:</b><br>
+    <a id="cos" href="#">Cos</a>
+</p>
+<p><b>Расчет синуса:</b><br>
+    <a id="sin" href="#">Sin</a>
+</p>
+<p><b>Результат (</b>
+    <label id="label"></label>
+    <b>):</b>
+    <br/>
+<div id="container"></div>
+</p>
+</body>
+<script>
+    $('#cos').click(function () {
+        $.ajax({
+            type: "GET",
+            cache: false,
+            url: '/doRecurCos',
+            data: {
+                'step': $('#step').val(),
+                'step_count': $('#step_count').val()
+            },
+            success: function (response) {
+
+            var event_data = '';
+                $.each(response, function(index, value){
+                    event_data += '<tr>';
+                    event_data += '<td>'+value+'</td>';
+                    event_data += '<tr>';
+                });
+            $("#label").html("косинус с шагом=" + $('#step').val() + " и числом шагов=" + $('#step_count').val());
+            $("#container").html(event_data);
+            },
+            error: function(d){
+            $("#label").html("косинус с шагом=" + $('#step').val() + " и числом шагов=" + $('#step_count').val());
+                $("#container").html("Что-то сломалось");
+            }
+        });
+    });
+
+    $('#sin').click(function () {
+        $.ajax({
+            type: "GET",
+            cache: false,
+            url: '/doRecurSin',
+            data: {
+                'step': $('#step').val(),
+                'step_count': $('#step_count').val()
+            },
+            success: function (response) {
+                var event_data = '';
+                    $.each(response, function(index, value){
+                        event_data += '<tr>';
+                        event_data += '<td>'+value+'</td>';
+                        event_data += '<tr>';
+                    });
+            $("#label").html("синус с шагом=" + $('#step').val() + " и числом шагов=" + $('#step_count').val());
+                $("#container").html(event_data);
+            },
+            error: function(d){
+            $("#label").html("синус с шагом=" + $('#step').val() + " и числом шагов=" + $('#step_count').val());
+                $("#container").html("Что-то сломалось");
+            }
+        });
+    });
+
+
+</script>
+</html>
